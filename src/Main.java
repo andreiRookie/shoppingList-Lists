@@ -13,7 +13,8 @@ public class Main {
 
         while (true) {
             System.out.println("Выберите операцию:\n1. Добавить товар\n" +
-                            "2. Показать список покупок\n3. Удалить товар\n4. Выход");
+                            "2. Показать список покупок\n3. Удалить товар\n" +
+                            "4. Поиск\n5. Выход");
 
             String operationNumber = scanner.nextLine();
 
@@ -21,16 +22,20 @@ public class Main {
                 case "1" -> {
                     System.out.println("Какую покупку хотите добавить?");
                     String purchase = scanner.nextLine();
-                    shoppingList.add(purchase);
+                    shoppingList.add(purchase.trim());
                     System.out.println("Итого в списке покупок: " + shoppingList.size());
                 }
                 case "2" -> {
                     System.out.println("Список покупок:");
-                    System.out.println(shoppingListToString(shoppingList));
+                    if (shoppingList.isEmpty()) {
+                        System.out.println("Empty");
+                    } else {
+                        System.out.println(shoppingListToString(shoppingList));
+                    }
                 }
                 case "3" -> {
                     if (shoppingList.isEmpty()) {
-                        System.out.println(shoppingListToString(shoppingList));
+                        System.out.println("Empty");
                         break;
                     }
 
@@ -58,6 +63,11 @@ public class Main {
                             if (itemToDelete.trim().equalsIgnoreCase(nextItem)) {
                                 iterator.remove();
                                 System.out.println("Покупка \"" + nextItem  +"\" удалена, список покупок:");
+                                if (shoppingList.isEmpty()) {
+                                    System.out.println("Empty");
+                                    wasDeleted = true;
+                                    break;
+                                }
                                 System.out.println(shoppingListToString(shoppingList));
                                 wasDeleted = true;
                                 break;
@@ -67,6 +77,27 @@ public class Main {
                     }
                 }
                 case "4" -> {
+                    if (shoppingList.isEmpty()) {
+                        System.out.println("Empty");
+                        break;
+                    }
+
+                    List<String> foundItems = new ArrayList<>();
+
+                    System.out.println("Введите текст для поиска:");
+                    String query = scanner.nextLine();
+                    String queryLower = query.toLowerCase();
+
+                    for (String item : shoppingList) {
+                        String itemLower = item.toLowerCase();
+                        if (itemLower.contains(queryLower)) {
+                            foundItems.add(item);
+                        }
+                    }
+                    System.out.println("Найдено:");
+                    System.out.println(shoppingListToString(foundItems));
+                }
+                case "5" -> {
                     System.out.println("Bye bye");
                     return;
                 }
@@ -77,7 +108,7 @@ public class Main {
 
     private static String shoppingListToString(List<String> list) {
         if (list.isEmpty()) {
-            return "Your shopping list is empty";
+            return "";
         }
 
         StringBuilder sb = new StringBuilder();
